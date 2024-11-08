@@ -1,10 +1,10 @@
 package com.example.contact_management.auth.config;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -22,9 +22,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.contact_management.auth.repositories.UserRepository;
@@ -58,6 +55,7 @@ public class SecurityConfiguration{
                 )
             .authorizeHttpRequests(request -> request
                     .requestMatchers("api/auth/login","api/auth/signup").permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                     .anyRequest().authenticated()
                 )
             .formLogin(form -> form
@@ -110,7 +108,7 @@ public class SecurityConfiguration{
 
     @Bean
     UserDetailsService userDetailsService(){
-        return username -> userRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        return email -> userRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("User not found"));
     }
 
     @Bean
@@ -118,15 +116,16 @@ public class SecurityConfiguration{
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+   /* @Bean
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         config.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
+        config.setAllowedHeaders("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**",config);
         return source;
-    }
+    }*/
     
     @Bean
     AuthenticationProvider authenticationProvider() {

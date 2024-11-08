@@ -47,7 +47,7 @@ public class AuthService{
 
     public void login(HttpServletRequest req,HttpServletResponse res, LoginRequestDTO data){
         
-       if(userRepository.findByUsername(data.username()).isEmpty()){
+       if(userRepository.findByEmail(data.email()).isEmpty()){
             throw new BadCredentialsException("Invalid username or password"); 
         }
         
@@ -55,7 +55,7 @@ public class AuthService{
 
         Authentication authentication =  authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                    data.username(),
+                    data.email(),
                     data.password()
                     )
                 );
@@ -73,7 +73,7 @@ public class AuthService{
 
     public void signup(SignupRequestDTO data){
 
-        if(userRepository.findByUsername(data.username()).isPresent()){
+        if(userRepository.findByEmail(data.email()).isPresent()){
             throw new ResourceAlreadyExistsException("User already exists"); 
         }
 
