@@ -13,6 +13,9 @@ import com.example.contact_management.auth.models.User;
 public interface ContactRepository extends JpaRepository<Contact,Long>{
    
     Page<Contact> findByUser(User user,Pageable pageable);
+    Page<Contact> findByUserAndFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrTitleContainingIgnoreCase(
+            User user, String firstName, String lastName, String title, Pageable pageable);
+
 
 
 }

@@ -85,4 +85,13 @@ public class ContactService{
         }
         contactRepository.delete(contact);
     }
+
+    public PaginatedContactListDTO search(int page, int size, String query, User user){
+        Pageable pageable = PageRequest.of(page, size, Sort.by("firstName").ascending().and(Sort.by("lastName").ascending()).and(Sort.by("title").ascending()));
+
+        Page<Contact> contactsPage = contactRepository.findByUserAndFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrTitleContainingIgnoreCase(
+                user, query, query, query, pageable);
+
+        return ContactMapper.paginatedContactsToPaginatedContactDTO(contactsPage);
+    }
 }

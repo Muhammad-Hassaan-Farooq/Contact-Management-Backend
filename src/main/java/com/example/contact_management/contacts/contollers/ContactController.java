@@ -65,6 +65,15 @@ public class ContactController {
         return new ResponseEntity<>("Contact deleted successfully",HttpStatus.OK);
 
     }
+    @GetMapping("/search")
+    public PaginatedContactListDTO searchContacts(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam String query,
+            @AuthenticationPrincipal User user
+    ) {
+        return contactService.search(page, size, query, user);
+    }
 
 
 
