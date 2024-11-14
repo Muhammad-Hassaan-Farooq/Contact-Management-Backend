@@ -4,6 +4,7 @@ import com.example.contact_management.contacts.dto.UpdateContactDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.contact_management.auth.models.User;
@@ -51,7 +52,7 @@ public class ContactService{
     }
 
     public PaginatedContactListDTO getPaginatedContacts(int page,int size, User user){
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page,size,Sort.by("firstName").ascending().and(Sort.by("lastName").ascending()));
 
         Page<Contact> contactsPage = contactRepository.findByUser(user,pageable);
 
