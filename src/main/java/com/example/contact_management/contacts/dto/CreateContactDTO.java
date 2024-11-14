@@ -1,4 +1,4 @@
-package com.example.contact_management.contacts.DTO;
+package com.example.contact_management.contacts.dto;
 
 
 import java.util.List;

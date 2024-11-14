@@ -11,6 +11,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,8 +47,7 @@ public class SecurityConfiguration{
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
-            .csrf(csrf ->csrf
-                    .disable()
+            .csrf(AbstractHttpConfigurer::disable
                 )
             .sessionManagement(session ->session
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
@@ -58,11 +58,9 @@ public class SecurityConfiguration{
                     .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                     .anyRequest().authenticated()
                 )
-            .formLogin(form -> form
-                    .disable()
+            .formLogin(AbstractHttpConfigurer::disable
                 )
-            .httpBasic(basic -> basic
-                    .disable()
+            .httpBasic(AbstractHttpConfigurer::disable
                 )
             .addFilterBefore(new OncePerRequestFilter() {
                 @Override
@@ -116,16 +114,6 @@ public class SecurityConfiguration{
         return new BCryptPasswordEncoder();
     }
 
-   /* @Bean
-    CorsConfigurationSource corsConfigurationSource(){
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        config.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
-        config.setAllowedHeaders("*");
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**",config);
-        return source;
-    }*/
     
     @Bean
     AuthenticationProvider authenticationProvider() {

@@ -16,7 +16,6 @@ import com.example.contact_management.auth.models.LoginRequestDTO;
 import com.example.contact_management.auth.models.SignupRequestDTO;
 import com.example.contact_management.auth.models.User;
 import com.example.contact_management.auth.repositories.UserRepository;
-import com.example.contact_management.exceptionhandling.InvalidCredentialsException;
 import com.example.contact_management.exceptionhandling.ResourceAlreadyExistsException;
 
 import jakarta.servlet.http.HttpServletRequest;

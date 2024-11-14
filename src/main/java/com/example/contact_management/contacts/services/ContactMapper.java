@@ -1,14 +1,17 @@
 package com.example.contact_management.contacts.services;
 
+import com.example.contact_management.contacts.dto.UpdateContactDTO;
 import org.springframework.data.domain.Page;
 
 import com.example.contact_management.auth.models.User;
-import com.example.contact_management.contacts.DTO.ContactResponseDTO;
-import com.example.contact_management.contacts.DTO.CreateContactDTO;
-import com.example.contact_management.contacts.DTO.PaginatedContactListDTO;
+import com.example.contact_management.contacts.dto.ContactResponseDTO;
+import com.example.contact_management.contacts.dto.CreateContactDTO;
+import com.example.contact_management.contacts.dto.PaginatedContactListDTO;
 import com.example.contact_management.contacts.models.Contact;
 
 public class ContactMapper{
+
+    private ContactMapper(){}
 
     public static Contact createContactDTOToContact(CreateContactDTO createContactDTO,User user){
         Contact contact = new Contact();
@@ -24,29 +27,48 @@ public class ContactMapper{
     }
 
     public static ContactResponseDTO contactToContactResponse(Contact contact){
-        ContactResponseDTO cDto = new ContactResponseDTO(
-            contact.getId(),
-            contact.getFirstName(),
-            contact.getLastName(),
-            contact.getTitle(),
-            contact.getEmailAddresses(),
-            contact.getPhoneNumbers()
-                );
 
-        return cDto;
+        return new ContactResponseDTO(
+                contact.getId(),
+                contact.getFirstName(),
+                contact.getLastName(),
+                contact.getTitle(),
+                contact.getEmailAddresses(),
+                contact.getPhoneNumbers()
+        );
     }
 
     public static PaginatedContactListDTO paginatedContactsToPaginatedContactDTO(Page<Contact> contactpage){
         
         Page<ContactResponseDTO> page = contactpage.map(ContactMapper::contactToContactResponse);
 
-       PaginatedContactListDTO paginatedContactListDTO = new PaginatedContactListDTO(
-        page.getContent(),
-        page.getNumber(),
-        page.getTotalPages()
-       );
+        return new PaginatedContactListDTO(
+         page.getContent(),
+         page.getNumber(),
+         page.getTotalPages()
+        );
+    }
 
-       return paginatedContactListDTO;
+    public static Contact updateContactFromDTO(Contact contact, UpdateContactDTO updateContactDTO){
+        if (updateContactDTO.firstName() != null) {
+            contact.setFirstName(updateContactDTO.firstName());
+        }
+        if (updateContactDTO.lastName() != null) {
+            contact.setLastName(updateContactDTO.lastName());
+        }
+        if (updateContactDTO.title() != null) {
+            contact.setTitle(updateContactDTO.title());
+        }
+        if (updateContactDTO.emails() != null) {
+            contact.getEmailAddresses().clear();
+            contact.getEmailAddresses().addAll(updateContactDTO.emails());
+        }
+        if (updateContactDTO.phoneNumbers() != null) {
+            contact.getPhoneNumbers().clear();
+            contact.getPhoneNumbers().addAll(updateContactDTO.phoneNumbers());
+        }
+
+        return contact;
     }
 
 
