@@ -37,4 +37,14 @@ class AuthControllerTests {
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
+
+    @Test
+    void IncorrectBodyToLogin() throws Exception{
+        Mockito.doNothing().when(authService).login(Mockito.any(),Mockito.any(),Mockito.any());
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/login")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
 }
