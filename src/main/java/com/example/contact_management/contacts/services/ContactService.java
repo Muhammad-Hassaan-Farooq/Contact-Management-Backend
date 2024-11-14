@@ -19,8 +19,8 @@ import com.example.contact_management.exceptionhandling.UnauthorizedException;
 @Service
 public class ContactService{
 
-    private static final String contact_doesnot_exist = "Contact doesnot exist";
-    private static final String no_permission_to_access_contact = "You do not have permission to access this contact.";
+    private static final String CONTACT_DOESNOT_EXIST = "Contact doesnot exist";
+    private static final String NOT_HAVE_PERMISSION_TO_ACCESS_THIS_CONTACT = "You do not have permission to access this contact.";
     private final ContactRepository contactRepository;
 
     public ContactService(ContactRepository contactRepository){
@@ -36,11 +36,11 @@ public class ContactService{
 
     public ContactResponseDTO getContactById(Long id, User user){
         Contact contact = contactRepository.findById(id).orElseThrow(()->
-                new ResourceNotFoundException(contact_doesnot_exist)
+                new ResourceNotFoundException(CONTACT_DOESNOT_EXIST)
                 );
 
         if (!contact.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException(no_permission_to_access_contact);
+            throw new UnauthorizedException(NOT_HAVE_PERMISSION_TO_ACCESS_THIS_CONTACT);
         }
 
 
@@ -62,10 +62,10 @@ public class ContactService{
 
     public ContactResponseDTO updateContactById(Long id, User user, UpdateContactDTO updateContactDTO){
         Contact contact = contactRepository.findById(id).orElseThrow(()->
-                new ResourceNotFoundException(contact_doesnot_exist)
+                new ResourceNotFoundException(CONTACT_DOESNOT_EXIST)
         );
         if (!contact.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException(no_permission_to_access_contact);
+            throw new UnauthorizedException(NOT_HAVE_PERMISSION_TO_ACCESS_THIS_CONTACT);
         }
 
         Contact updatedContact = ContactMapper.updateContactFromDTO(contact,updateContactDTO);
@@ -76,11 +76,11 @@ public class ContactService{
 
     public void deleteContactById(Long id, User user){
         Contact contact = contactRepository.findById(id).orElseThrow(()->
-                new ResourceNotFoundException(contact_doesnot_exist)
+                new ResourceNotFoundException(CONTACT_DOESNOT_EXIST)
         );
 
         if (!contact.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException(no_permission_to_access_contact);
+            throw new UnauthorizedException(NOT_HAVE_PERMISSION_TO_ACCESS_THIS_CONTACT);
         }
         contactRepository.delete(contact);
     }
