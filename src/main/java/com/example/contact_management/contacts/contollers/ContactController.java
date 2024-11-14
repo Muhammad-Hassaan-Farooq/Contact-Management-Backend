@@ -6,8 +6,6 @@ import com.example.contact_management.contacts.models.PhoneNumber;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.property.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,7 +28,7 @@ import java.util.List;
 @RequestMapping("/api/contacts")
 public class ContactController {
 
-    private static final Logger log = LoggerFactory.getLogger(ContactController.class);
+
     private final ContactService contactService;
 
     public ContactController(ContactService contactService) {

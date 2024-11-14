@@ -29,7 +29,6 @@ public class Contact{
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    
 
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -44,6 +43,9 @@ public class Contact{
         return this.id;
     }
 
+    public void setId(Long id){
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -68,6 +70,7 @@ public class Contact{
     public void setTitle(String title) {
         this.title = title;
     }
+
 
 
     public List<EmailAddress> getEmailAddresses() {
