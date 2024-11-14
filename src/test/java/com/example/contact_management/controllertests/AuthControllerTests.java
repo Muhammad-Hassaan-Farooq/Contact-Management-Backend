@@ -81,10 +81,10 @@ class AuthControllerTests {
     void SuccessfulLogoutTest() throws Exception {
         // Mock authentication
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/logout")
-                        .with(SecurityMockMvcRequestPostProcessors.user("test@example.com").password("password").roles("USER")) // Simulate logged-in user
+                        .with(SecurityMockMvcRequestPostProcessors.user("test@example.com").password("password").roles("USER"))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Expecting status 200 OK
-                .andExpect(MockMvcResultMatchers.content().string("Logged out succesfully")); // Customize this based on your logout response message
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("Logged out succesfully"));
     }
     @Test
     void UnauthorizedLogoutTest() throws Exception {
