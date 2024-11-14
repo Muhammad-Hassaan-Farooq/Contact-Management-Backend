@@ -93,9 +93,10 @@ public class ContactController {
     @GetMapping("/export")
     public ResponseEntity<byte[]> exportContacts(@AuthenticationPrincipal User user){
 
-        PaginatedContactListDTO paginatedContactListDTO = contactService.getPaginatedContacts(0,Integer.MAX_VALUE,user);
+
 
         try {
+            PaginatedContactListDTO paginatedContactListDTO = contactService.getPaginatedContacts(0,Integer.MAX_VALUE,user);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             for (ContactResponseDTO contact : paginatedContactListDTO.contacts()) {
                 VCard vCard = new VCard();
@@ -183,7 +184,6 @@ public class ContactController {
 
         }
         catch (Exception e){
-            log.error("e: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

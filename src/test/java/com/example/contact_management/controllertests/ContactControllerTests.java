@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
@@ -215,6 +216,32 @@ class ContactControllerTests {
         assertEquals("text/vcard", response.getContentType());
         assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
+
+    @Test
+    @WithMockUser(username = "test@example.com", roles = {"USER"})
+    void exportContactsInternalServerError() throws Exception {
+        Mockito.when(contactService.getPaginatedContacts(anyInt(), anyInt(), any())).thenThrow(new RuntimeException("Database error"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/contacts/export")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+    }
+    @Test
+    @WithMockUser(username = "test@example.com", roles = {"USER"})
+    void importContactsSuccess() throws Exception {
+        // Mock file content with valid VCard data
+        String vcardContent = "BEGIN:VCARD\nFN:John Doe\nTEL;TYPE=HOME:1234567890\nEMAIL:john.doe@example.com\nEND:VCARD";
+        MockMultipartFile file = new MockMultipartFile("file", "contacts.vcf", "text/vcard", vcardContent.getBytes());
+
+        Mockito.when(contactService.createContact(any(),any())).thenReturn(null);
+
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/contacts/import")
+                        .file(file)
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Imported successfully"));
+    }
+
 
 
 }
