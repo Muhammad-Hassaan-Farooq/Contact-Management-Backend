@@ -1,5 +1,7 @@
 package com.example.contact_management.auth.services;
 
+import com.example.contact_management.auth.models.*;
+import com.example.contact_management.exceptionhandling.PasswordChangeException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,9 +14,6 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 
-import com.example.contact_management.auth.models.LoginRequestDTO;
-import com.example.contact_management.auth.models.SignupRequestDTO;
-import com.example.contact_management.auth.models.User;
 import com.example.contact_management.auth.repositories.UserRepository;
 import com.example.contact_management.exceptionhandling.ResourceAlreadyExistsException;
 
@@ -93,6 +92,21 @@ public class AuthService{
         sHandler.logout(req,res,authentication);
     
     }
+
+    public void changePassword(User user, ChangePasswordDTO changePasswordDTO){
+        if (!passwordEncoder.matches(changePasswordDTO.oldPassword(), user.getPassword())) {
+            throw new PasswordChangeException("Old password is incorrect");
+        }
+        if (changePasswordDTO.oldPassword().equals(changePasswordDTO.newPassword())) {
+            throw new PasswordChangeException("New password cannot be the same as the old password");
+        }
+
+        String hashedNewPassword = passwordEncoder.encode(changePasswordDTO.newPassword());
+        user.setPassword(hashedNewPassword);
+
+        userRepository.save(user);
+    }
+
 }
 
 

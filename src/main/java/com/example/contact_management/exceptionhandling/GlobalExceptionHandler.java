@@ -33,4 +33,9 @@ public class GlobalExceptionHandler{
         return new ResponseEntity<>(e.getMessage(),HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(value=PasswordChangeException.class)
+    public ResponseEntity<String> passwordChangeExceptionHandler(Exception e){
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
 }

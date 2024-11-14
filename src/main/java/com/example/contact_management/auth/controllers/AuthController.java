@@ -1,16 +1,14 @@
 package com.example.contact_management.auth.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.contact_management.auth.models.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import com.example.contact_management.auth.models.LoginRequestDTO;
-import com.example.contact_management.auth.models.SignupRequestDTO;
 import com.example.contact_management.auth.services.AuthService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,6 +52,23 @@ public class AuthController{
     public ResponseEntity<String>  postMethodName(HttpServletRequest req, HttpServletResponse res, Authentication authentication) {
         authService.logout(req,res,authentication);
         return ResponseEntity.ok("Logged out succesfully");
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserDetailDTO> getUserDetails(@AuthenticationPrincipal User user){
+        return new ResponseEntity<>(new UserDetailDTO(
+                user.getFirstName(),
+                user.getLastName(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getCreatedAt()
+        ),HttpStatus.OK);
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@AuthenticationPrincipal User user, @RequestBody ChangePasswordDTO changePasswordDTO){
+        authService.changePassword(user,changePasswordDTO);
+        return new ResponseEntity<>("Password changed",HttpStatus.OK);
     }
     
 
