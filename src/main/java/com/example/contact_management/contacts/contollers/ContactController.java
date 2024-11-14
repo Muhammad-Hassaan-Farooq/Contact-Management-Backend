@@ -1,7 +1,6 @@
 package com.example.contact_management.contacts.contollers;
 
 import com.example.contact_management.contacts.dto.UpdateContactDTO;
-import com.example.contact_management.contacts.models.Contact;
 import com.example.contact_management.contacts.models.EmailAddress;
 import com.example.contact_management.contacts.models.PhoneNumber;
 import ezvcard.Ezvcard;
@@ -166,18 +165,7 @@ public class ContactController {
                 List<Email> emailList = vCard.getEmails();
                 List<EmailAddress> emails = new ArrayList<>();
                 if (!emailList.isEmpty()) {
-                    for (Email email : emailList) {
-                        String type = email.getParameter("TYPE");
-                        String emailAddress = email.getValue();
-
-                        EmailAddress emailAddress1 = new EmailAddress();
-
-                        emailAddress1.setEmail(emailAddress);
-                        emailAddress1.setLabel(type);
-
-                        emails.add(emailAddress1);
-
-                    }
+                    emails = getEmail(emailList);
                 }
 
                 CreateContactDTO createContactDTO = new CreateContactDTO(
@@ -199,6 +187,23 @@ public class ContactController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    private List<EmailAddress> getEmail(List<Email> emailList){
+        List<EmailAddress> emails = new ArrayList<>();
+        for (Email email : emailList) {
+            String type = email.getParameter("TYPE");
+            String emailAddress = email.getValue();
+
+            EmailAddress emailAddress1 = new EmailAddress();
+
+            emailAddress1.setEmail(emailAddress);
+            emailAddress1.setLabel(type);
+
+            emails.add(emailAddress1);
+
+        }
+        return emails;
     }
 
 
