@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 
 import java.util.List;
@@ -24,7 +23,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class ContactServiceTest {
+class ContactServiceTest {
 
     @Mock
     private ContactRepository contactRepository;
@@ -105,8 +104,8 @@ public class ContactServiceTest {
     void getContactById_UnauthorizedException() {
 
         Long contactId = 1L;
-        User user = new User();
-        user.setId(2L);
+        User user1 = new User();
+        user1.setId(2L);
 
         Contact contact = new Contact();
         contact.setId(contactId);
@@ -116,7 +115,7 @@ public class ContactServiceTest {
         when(contactRepository.findById(contactId)).thenReturn(Optional.of(contact));
 
         assertThrows(UnauthorizedException.class, () -> {
-            contactService.getContactById(contactId, user);
+            contactService.getContactById(contactId, user1);
         });
 
         verify(contactRepository, times(1)).findById(contactId);
