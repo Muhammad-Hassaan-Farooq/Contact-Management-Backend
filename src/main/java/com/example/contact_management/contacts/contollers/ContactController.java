@@ -57,12 +57,12 @@ public class ContactController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteContactById(
+    public ResponseEntity<String> deleteContactById(
             @PathVariable Long id,
             @AuthenticationPrincipal User user) {
 
         contactService.deleteContactById(id,user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("Contact deleted successfully",HttpStatus.OK);
 
     }
 
