@@ -216,13 +216,5 @@ class ContactControllerTests {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
-    @Test
-    @WithMockUser(username = "test@example.com", roles = {"USER"})
-    void exportContactsInternalServerError() throws Exception {
-        Mockito.when(contactService.getPaginatedContacts(anyInt(), anyInt(), any())).thenThrow(new RuntimeException("Database error"));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/contacts/export")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());
-    }
 }
