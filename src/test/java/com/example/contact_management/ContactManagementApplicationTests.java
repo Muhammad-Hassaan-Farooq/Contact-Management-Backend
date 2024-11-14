@@ -8,6 +8,7 @@ class ContactManagementApplicationTests {
 
 	@Test
 	void contextLoads() {
+		//Test to check if app loads
 	}
 
 }

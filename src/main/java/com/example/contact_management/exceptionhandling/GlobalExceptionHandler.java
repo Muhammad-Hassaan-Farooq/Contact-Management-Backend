@@ -24,13 +24,13 @@ public class GlobalExceptionHandler{
     
     @ExceptionHandler(value = ResourceNotFoundException.class)
     public ResponseEntity<String> notfoundHandler(Exception e){
-        return new ResponseEntity<String>(e.getMessage(),HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
 
     }
 
     @ExceptionHandler(value = UnauthorizedException.class)
     public ResponseEntity<String> unauthorizedHandler(Exception e){
-        return new ResponseEntity<String>(e.getMessage(),HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.FORBIDDEN);
     }
 
 }

@@ -18,7 +18,7 @@ import jakarta.persistence.OneToMany;
 public class Contact{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long Id;
+    private long id;
 
     private String firstName;
     private String lastName;
@@ -33,15 +33,15 @@ public class Contact{
 
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EmailAddress> emailAddresses = new ArrayList<EmailAddress>();
+    private List<EmailAddress> emailAddresses = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>();
+    private List<PhoneNumber> phoneNumbers = new ArrayList<>();
 
 
 
     public long getId() {
-        return this.Id;
+        return this.id;
     }
 
 
