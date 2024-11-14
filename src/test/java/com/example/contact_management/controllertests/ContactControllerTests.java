@@ -3,6 +3,8 @@ package com.example.contact_management.controllertests;
 import com.example.contact_management.contacts.dto.ContactResponseDTO;
 import com.example.contact_management.contacts.dto.PaginatedContactListDTO;
 import com.example.contact_management.contacts.dto.UpdateContactDTO;
+import com.example.contact_management.contacts.models.EmailAddress;
+import com.example.contact_management.contacts.models.PhoneNumber;
 import com.example.contact_management.contacts.services.ContactService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -10,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,8 +23,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -183,5 +188,41 @@ class ContactControllerTests {
                         .file("file", "dummy vcf content".getBytes())
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "test@example.com", roles = {"USER"})
+    void exportContactsSuccessWithContacts() throws Exception {
+        EmailAddress emailAddress = new EmailAddress();
+        emailAddress.setEmail("test@example.com");
+        PhoneNumber phoneNumber = new PhoneNumber();
+        phoneNumber.setLabel("Home");
+        phoneNumber.setNumber("1234567890");
+        List<EmailAddress> emails = List.of(emailAddress);
+        List<PhoneNumber> phones = List.of(phoneNumber);
+        ContactResponseDTO contact = new ContactResponseDTO(1L, "John", "Doe", "Mr.", emails, phones);
+        PaginatedContactListDTO paginatedContactList = new PaginatedContactListDTO(List.of(contact), 1, 1);
+
+        Mockito.when(contactService.getPaginatedContacts(anyInt(), anyInt(), any())).thenReturn(paginatedContactList);
+
+        MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.get("/api/contacts/export")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
+
+        assertEquals("attachment; filename=contacts.vcf", response.getHeader(HttpHeaders.CONTENT_DISPOSITION));
+        assertEquals("text/vcard", response.getContentType());
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
+    @Test
+    @WithMockUser(username = "test@example.com", roles = {"USER"})
+    void exportContactsInternalServerError() throws Exception {
+        Mockito.when(contactService.getPaginatedContacts(anyInt(), anyInt(), any())).thenThrow(new RuntimeException("Database error"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/contacts/export")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
     }
 }
