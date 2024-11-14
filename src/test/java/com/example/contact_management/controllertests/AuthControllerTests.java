@@ -47,4 +47,31 @@ class AuthControllerTests {
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
+
+    @Test
+    void SuccessfulSignupTest() throws Exception{
+        String signupJson = "{\n" +
+                "    \"username\": \"test2\",\n" +
+                "    \"password\": \"password\",\n" +
+                "    \"email\": \"test2@example.com\",\n" +
+                "    \"firstName\": \"test2\",\n" +
+                "    \"lastName\": \"user2\"\n" +
+                "}";
+        Mockito.doNothing().when(authService).signup(Mockito.any());
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/signup")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(signupJson)
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+    @Test
+    void IncorrectBodyToSignup() throws Exception{
+        Mockito.doNothing().when(authService).login(Mockito.any(),Mockito.any(),Mockito.any());
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/signup")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
 }

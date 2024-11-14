@@ -50,10 +50,6 @@ public class AuthController{
         return ResponseEntity.ok("User Registered succesfully");
     }
 
-    @GetMapping("/protected")
-    public ResponseEntity<String> protectedRoute() {
-        return ResponseEntity.ok("You are authenticated and can access this route!");
-    }
     
     @PostMapping("/logout")
     public ResponseEntity<String>  postMethodName(HttpServletRequest req, HttpServletResponse res, Authentication authentication) {
