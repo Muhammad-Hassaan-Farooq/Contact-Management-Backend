@@ -6,17 +6,19 @@ import com.example.contact_management.auth.services.AuthService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
-@WebMvcTest(controllers = {AuthController.class} ,excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+@AutoConfigureMockMvc
+@SpringBootTest
 class AuthControllerTests {
 
 
@@ -73,5 +75,22 @@ class AuthControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+    @Test
+    void SuccessfulLogoutTest() throws Exception {
+        // Mock authentication
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/logout")
+                        .with(SecurityMockMvcRequestPostProcessors.user("test@example.com").password("password").roles("USER")) // Simulate logged-in user
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk()) // Expecting status 200 OK
+                .andExpect(MockMvcResultMatchers.content().string("Logged out succesfully")); // Customize this based on your logout response message
+    }
+    @Test
+    void UnauthorizedLogoutTest() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/logout")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+
     }
 }
