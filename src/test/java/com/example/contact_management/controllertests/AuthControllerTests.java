@@ -1,7 +1,6 @@
 package com.example.contact_management.controllertests;
 
 
-import com.example.contact_management.auth.controllers.AuthController;
 import com.example.contact_management.auth.services.AuthService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -52,13 +51,15 @@ class AuthControllerTests {
 
     @Test
     void SuccessfulSignupTest() throws Exception{
-        String signupJson = "{\n" +
-                "    \"username\": \"test2\",\n" +
-                "    \"password\": \"password\",\n" +
-                "    \"email\": \"test2@example.com\",\n" +
-                "    \"firstName\": \"test2\",\n" +
-                "    \"lastName\": \"user2\"\n" +
-                "}";
+        String signupJson = """
+    {
+        "username": "test2",
+        "password": "password",
+        "email": "test2@example.com",
+        "firstName": "test2",
+        "lastName": "user2"
+    }
+    """;
         Mockito.doNothing().when(authService).signup(Mockito.any());
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/signup")
                         .with(csrf())
