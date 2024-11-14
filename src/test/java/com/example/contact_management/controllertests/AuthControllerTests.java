@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @WebMvcTest(controllers = {AuthController.class} ,excludeAutoConfiguration = {SecurityAutoConfiguration.class})
-public class AuthControllerTests {
+class AuthControllerTests {
 
 
     @Autowired
@@ -27,7 +27,7 @@ public class AuthControllerTests {
     private AuthService authService;
 
     @Test
-    public void SuccessfulLoginTest() throws Exception{
+    void SuccessfulLoginTest() throws Exception{
         String loginJson = "{ \"email\": \"test@example.com\", \"password\": \"password\" }";
         Mockito.doNothing().when(authService).login(Mockito.any(),Mockito.any(),Mockito.any());
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/login")
