@@ -8,7 +8,6 @@ import com.example.contact_management.auth.repositories.UserRepository;
 import com.example.contact_management.auth.services.AuthService;
 import com.example.contact_management.exceptionhandling.PasswordChangeException;
 import com.example.contact_management.exceptionhandling.ResourceAlreadyExistsException;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
